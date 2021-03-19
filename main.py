@@ -23,7 +23,6 @@ def read_data():
     
     freq = data.iloc[:,0] * 10e+9 + DAQ_OFFSET
     freq -= CORR_OFFSET
-    
     sig = data.iloc[:,1]
     
     
@@ -35,7 +34,7 @@ def read_data():
     
     return None
 
-def fit():
+def iodine_curve():
     return None
 
 read_data()
