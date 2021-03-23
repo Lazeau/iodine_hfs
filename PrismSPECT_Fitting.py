@@ -268,8 +268,8 @@ if Peaks1 == 1:
                 Fit_Parameters[tick, :] = popt
                 Area_1[tick] = Area_One(Wavelength, Transmission, Window_Length, Real_Wavelength, *popt)
                 tick = tick + 1
-                print str((float(tick)/float(((len(Width_Array)/2)*len(Intensity_Array))))*100) + "% for complete for file " + str(i+1)
-        print "File " + str(i+1) + " of " + str(Number_of_Files) + " complete."
+                print(str((float(tick)/float(((len(Width_Array)/2)*len(Intensity_Array))))*100) + "% for complete for file " + str(i+1))
+        print("File " + str(i+1) + " of " + str(Number_of_Files) + " complete.")
         Average_Intensity, StDev_Intensity = np.average(Fit_Parameters[:, 0]), np.std(Fit_Parameters[:, 0])
         Average_Position, StDev_Position = np.average(Fit_Parameters[:, 1]), np.std(Fit_Parameters[:, 1])
         Average_Width, StDev_Width = np.average(Fit_Parameters[:, 2]), np.std(Fit_Parameters[:, 2])
@@ -301,12 +301,12 @@ if Peaks1 == 2:
                 Fit_Parameters[tick, :] = popt
                 Area_1[tick, :] = Area_Two(Wavelength, Transmission, popt, Window_Length, Real_Wavelength)
                 tick = tick + 1
-                print str((float(tick)/float(((len(Width_Array1)/2)*len(Intensity_Array1))))*100) + "% for complete for file " + str(i+1)
+                print(str((float(tick)/float(((len(Width_Array1)/2)*len(Intensity_Array1))))*100) + "% for complete for file " + str(i+1))
         AreaL, StDevL, AreaR, StDevR = np.average(Area_1[:, 0]), np.std(Area_1[:, 0]), np.average(Area_1[:, 1]), np.std(Area_1[:, 1])
         Average_WidthL, StDevWidthL, Average_WidthR, StDevWidthR = np.average(Fit_Parameters[:, 2]), np.std(Fit_Parameters[:, 2]), np.average(Fit_Parameters[:, 5]), np.std(Fit_Parameters[:, 5])
         Average_IntensityL, StDevIntensityL, Average_IntensityR, StDevIntensityR = np.average(Fit_Parameters[:, 0]), np.std(Fit_Parameters[:, 0]), np.average(Fit_Parameters[:, 3]), np.std(Fit_Parameters[:, 3])
         Average_PositionL, StDevPositionL, Average_PositionR, StDevPositionR = np.average(Fit_Parameters[:, 1]), np.std(Fit_Parameters[:, 1]), np.average(Fit_Parameters[:, 4]), np.std(Fit_Parameters[:, 4])
-        print "File " + str(i+1) + " complete"
+        print("File " + str(i+1) + " complete")
         if which_peak == 'left':
             width1[i] = 2*Average_WidthL*(1 + np.sqrt(1.386294361))
             area1[i] = AreaL
@@ -339,10 +339,10 @@ elif Peaks1 == 3:
                 Fit_Parameters[tick, :] = popt
                 Area_1[tick] = Area_Three(Wavelength, Transmission, popt, Window_Length, Real_Wavelength)
                 tick = tick + 1
-                print str((float(tick)/float(((len(Width_Array2)/2)*len(Intensity_Array2))))*100) + "% for complete for file " + str(i+1)
+                print(str((float(tick)/float(((len(Width_Array2)/2)*len(Intensity_Array2))))*100) + "% for complete for file " + str(i+1))
         Average_Width, StDevWidth, Average_Intensity, StDevIntensity, Average_Position, StDevPosition = np.average(Fit_Parameters[:, 5]), np.std(Fit_Parameters[:, 5]), np.average(Fit_Parameters[:, 3]), np.std(Fit_Parameters[:, 3]), np.average(Fit_Parameters[:, 4]), np.std(Fit_Parameters[:, 4])
         Average_Area, StDevArea = np.average(Area_1), np.std(Area_1)
-        print "File " + str(i+1) + " complete"
+        print("File " + str(i+1) + " complete")
         width1[i] = 2*Average_Intensity*(1 + np.sqrt(1.386294361))
         area1[i] = Average_Area
         Fits1[i, :] = [Average_Intensity, StDevIntensity, Average_Position, StDevPosition, Average_Width, StDevWidth,  Average_Area, StDevArea]
@@ -369,8 +369,8 @@ if Peaks2 == 1:
                 Fit_Parameters[tick, :] = popt
                 Area_1[tick] = Area_One(Wavelength, Transmission, Window_Length, Real_Wavelength, *popt)    
                 tick = tick + 1
-                print str((float(tick)/float(((len(Width_Array)/2)*len(Intensity_Array))))*100) + "% for complete for file " + str(i+1)
-        print "File " + str(i+1) + " of " + str(Number_of_Files) + " complete."
+                print(str((float(tick)/float(((len(Width_Array)/2)*len(Intensity_Array))))*100) + "% for complete for file " + str(i+1))
+        print("File " + str(i+1) + " of " + str(Number_of_Files) + " complete.")
         Average_Intensity, StDev_Intensity = np.average(Fit_Parameters[:, 0]), np.std(Fit_Parameters[:, 0])
         Average_Position, StDev_Position = np.average(Fit_Parameters[:, 1]), np.std(Fit_Parameters[:, 1])
         Average_Width, StDev_Width = np.average(Fit_Parameters[:, 2]), np.std(Fit_Parameters[:, 2])
@@ -402,12 +402,12 @@ if Peaks2 == 2:
                 Fit_Parameters[tick, :] = popt
                 Area_1[tick, :] = Area_Two(Wavelength, Transmission, popt, Window_Length, Real_Wavelength)
                 tick = tick + 1
-                print str((float(tick)/float(((len(Width_Array1)/2)*len(Intensity_Array1))))*100) + "% for complete for file " + str(i+1)
+                print(str((float(tick)/float(((len(Width_Array1)/2)*len(Intensity_Array1))))*100) + "% for complete for file " + str(i+1))
         AreaL, StDevL, AreaR, StDevR = np.average(Area_1[:, 0]), np.std(Area_1[:, 0]), np.average(Area_1[:, 1]), np.std(Area_1[:, 1])
         Average_WidthL, StDevWidthL, Average_WidthR, StDevWidthR = np.average(Fit_Parameters[:, 2]), np.std(Fit_Parameters[:, 2]), np.average(Fit_Parameters[:, 5]), np.std(Fit_Parameters[:, 5])
         Average_IntensityL, StDevIntensityL, Average_IntensityR, StDevIntensityR = np.average(Fit_Parameters[:, 0]), np.std(Fit_Parameters[:, 0]), np.average(Fit_Parameters[:, 3]), np.std(Fit_Parameters[:, 3])
         Average_PositionL, StDevPositionL, Average_PositionR, StDevPositionR = np.average(Fit_Parameters[:, 1]), np.std(Fit_Parameters[:, 1]), np.average(Fit_Parameters[:, 4]), np.std(Fit_Parameters[:, 4])
-        print "File " + str(i+1) + " complete"
+        print("File " + str(i+1) + " complete")
         if which_peak == 'left':
             width2[i] = 2*Average_WidthL*(1 + np.sqrt(1.386294361))
             area2[i] = AreaL
@@ -440,10 +440,10 @@ elif Peaks2 == 3:
                 Fit_Parameters[tick, :] = popt
                 Area_1[tick] = Area_Three(Wavelength, Transmission, popt, Window_Length, Real_Wavelength)
                 tick = tick + 1
-                print str((float(tick)/float(((len(Width_Array2)/2)*len(Intensity_Array2))))*100) + "% for complete for file " + str(i+1)
+                print(str((float(tick)/float(((len(Width_Array2)/2)*len(Intensity_Array2))))*100) + "% for complete for file " + str(i+1))
         Average_Width, StDevWidth, Average_Intensity, StDevIntensity, Average_Position, StDevPosition = np.average(Fit_Parameters[:, 5]), np.std(Fit_Parameters[:, 5]), np.average(Fit_Parameters[:, 3]), np.std(Fit_Parameters[:, 3]), np.average(Fit_Parameters[:, 4]), np.std(Fit_Parameters[:, 4])
         Average_Area, StDevArea = np.average(Area_1), np.std(Area_1)
-        print "File " + str(i+1) + " complete"
+        print("File " + str(i+1) + " complete")
         width2[i] = 2*Average_Intensity*(1 + np.sqrt(1.386294361))
         area2[i] = Average_Area
         Fits2[i, :] = [Average_Intensity, StDevIntensity, Average_Position, StDevPosition, Average_Width, StDevWidth, Average_Area, StDevArea]
