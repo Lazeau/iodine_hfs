@@ -32,7 +32,23 @@ def maxwellian(b, x, x0, T):
     return b * np.exp( -((x-x0)**2 * M*C**2) / (4*K*T*x0) )
 
 def i_ii_line(x, *pars):
-    a = pars[0]     # Frequency offset ## This is the DC offset, not freq. should be small T.E.S.
+    '''
+    Specify the full lineshape of the 15 hyperfine transitions of I II.
+    
+    Parameters
+    ----------
+    x : Numpy array, GHz
+        Scanning frequency values
+    *pars
+        Array of 23 initial parameters to fit the curve
+    
+    Returns
+    -------
+    G
+        Function containing 15 overlapping Maxwellian curves to characterize
+        the I II lineshape, in terms of the provided fit parameters.
+    '''
+    a = pars[0]     # DC offset, not freq. should be small T.E.S.
     Au = pars[1]    # P state magnetic dipole coupling coefficient 
     Bu = pars[2]    # P state electric quadrupole coupling coefficient
     Al = pars[3]    # D state magnetic dipole coupling coefficient
@@ -64,6 +80,21 @@ def i_ii_line(x, *pars):
     return G
 
 def get_peaks(freq, sig):
+    '''
+    Determine peaks in the I II lineshape, display each peak with an 'X', and
+    print the peak values to the console.
+    
+    Parameters
+    ----------
+    freq : array-like, GHz
+        Array of scanning frequencies.
+    sig : array-like, arb.
+        Array of signal values.
+    
+    Returns
+    -------
+    None.
+    '''
     x = np.linspace(0, sig.size, sig.size)
     peaks, _ = find_peaks(sig, height=1)
     
@@ -106,7 +137,7 @@ for i in range(fits):
     fit_pars[6] = np.random.uniform(dNu2-1, dNu2+1)             # Second-highest-intensity transition guess in +-1 GHz window around predicted value, dNu2
     fit_pars[7] = np.random.random()                            # Temp guess
     fit_pars[8:23] = np.random.uniform(0, sig_max, 15)          # Amplitude guesses
-    print(fit_pars)
+    print("Fit parameters:", fit_pars) # TODO: add formatting or delete
     print("Fit ", i)
     
     popt, pcov = so.curve_fit(i_ii_line, freq, sig, fit_pars, maxfev=10000)
