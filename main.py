@@ -257,6 +257,7 @@ amp_devs = devs[7:22]
 
 print("\n\nPredicted coupling coefficients:\n A_U: {},\n B_U: {},\n A_L: {},\n B_L: {},\n T: {},\n dNu1: {},\n dNu2: {}\n".format(A_U, B_U, A_L, B_L, T, dNu1, dNu2))
 print('Standard Deviations:\n', devs)
+print('A_U, A_L error:', A_U_err, ',', A_L_err)
 
 # Histogram of RMSE values
 # plt.hist(ex_fits.iloc[:,22])
