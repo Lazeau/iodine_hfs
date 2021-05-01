@@ -227,8 +227,8 @@ A_L = (8/25)*dNu1 - (6/5)*dNu2 - (11/25)*B_U + (73/200)*B_L
 # Calculate errors
 devs = np.std(ex_fits, axis=0)
 
-A_U_err = np.sqrt(devs[2]**2 + devs[3]**2 + devs[4]**2 + devs[5]**2)
-A_L_err = A_U_err
+A_U_err = np.sqrt(( (14/25)*devs[2] )**2 + ( (8/5)*devs[3] )**2 + ( (31/50)*devs[4] )**2 + ( (13/25)*devs[5] )**2)
+A_L_err = np.sqrt(( (8/25)*devs[2] )**2 + ( (6/5)*devs[3] )**2 + ( (11/25)*devs[4] )**2 + ( (73/200)*devs[5] )**2)
 
 # Calculate all excellent fit transition predictions from sys. eqs. in terms of dNu1, dNu2, B_U, B_L
 ex_dNu = [ex_fits.iloc[:,2],                                                                                       # 100
@@ -257,13 +257,17 @@ amp_devs = devs[7:22]
 
 print("\n\nPredicted coupling coefficients:\n A_U: {},\n B_U: {},\n A_L: {},\n B_L: {},\n T: {},\n dNu1: {},\n dNu2: {}\n".format(A_U, B_U, A_L, B_L, T, dNu1, dNu2))
 print('Standard Deviations:\n', devs)
-print('A_U, A_L error:', A_U_err, ',', A_L_err)
+print('\nA_U:', A_U, '+-', A_U_err)
+print('A_L:', A_L, '+-', A_L_err)
 
 # Histogram of RMSE values
 # plt.hist(ex_fits.iloc[:,22])
 
 # Plot of measured lineshape and average of best fit values
 fig = plt.figure(figsize=(8,6), dpi=128)
+# font = {'family' : 'normal',
+#         'size'   : 16}
+# plt.rc('font', **font)
 plt.plot(freq, sig, '.', color='c',  label='Measured lineshape') # markersize 4
 plt.plot(freq, best_vals,  color='r', label='Fitted lineshape')
 plt.legend()
