@@ -268,11 +268,12 @@ fig = plt.figure(figsize=(8,6), dpi=128)
 # font = {'family' : 'normal',
 #         'size'   : 16}
 # plt.rc('font', **font)
-plt.plot(freq, sig, '.', color='c',  label='Measured lineshape') # markersize 4
+plt.plot(freq, sig, '.', color='c', label='Measured lineshape')
 plt.plot(freq, best_vals,  color='r', label='Fitted lineshape')
 plt.legend()
 plt.ylabel('Signal (arb.)')
 plt.xlabel('\u0394 f (GHz)')
+# plt.xlim(-4, 4)
 # Plot transition predictions on top of fitted lineshape, with error bars
 plot_transitions(freq, best_vals, dNu1, dNu2, B_U, B_L, best_pars[6:], amp_devs, trans_devs)
 
