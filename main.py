@@ -4,6 +4,7 @@ Created on Sat Mar  6 15:08:02 2021
 
 @author: mlazo
 """
+import time
 
 import pandas as pd
 import numpy as np
@@ -101,30 +102,31 @@ def i_ii_line(x, *pars):
     
     return G
 
-def plot_transitions(freq, vals, dNu1, dNu2, Bu, Bl, amps, amp_devs, trans_devs):
-    dNu = [dNu1,                                              # 100
-          dNu2,                                               # 76
-          -0.76*dNu1 - 1.6*dNu2  + 0.37*Bu - 0.2735714286*Bl, # 56
-          -1.28*dNu1 + 1.8*dNu2  + 0.84*Bu - 0.6439285714*Bl, # 40
-          -1.6*dNu1  + 1*dNu2    + 1.3*Bu  - 1.128571429*Bl,  # 18
-          0.68*dNu1  - 3.8*dNu2  - 1.61*Bu + 1.176071429*Bl,  # 16
-          1.76*dNu1  - 5.6*dNu2  - 2.42*Bu + 2.066428571*Bl,  # 15
-          -0.16*dNu1 - 2.4*dNu2  - 0.7*Bu  + 0.3335714286*Bl, # 14
-          3.08*dNu1  - 7.8*dNu2  - 2.86*Bu + 2.86*Bl,         # 10
-          -0.76*dNu1 - 1.4*dNu2  + 0.1*Bu  - 0.3485714286*Bl, # 9
-          -1.56*dNu1 + 1.6*dNu2  + 1.2*Bu  - 0.9664285714*Bl, # 8
-          4.84*dNu1  - 14.4*dNu2 - 5.28*Bu + 4.926428571*Bl,  # 1
-          3.2*dNu1   - 11*dNu2   - 4.4*Bu  + 3.516071429*Bl,  # 1
-          1.8*dNu1   - 8*dNu2    - 3.15*Bu + 2.153571429*Bl,  # 1
-          0.64*dNu1  - 5.4*dNu2  - 1.8*Bu  + 0.9514285714*Bl] # 1
-    dNu = np.asarray(dNu)
+# DEPRECATED - functionality moved to lines 281-303
+# def plot_transitions(freq, vals, dNu1, dNu2, Bu, Bl, amps, amp_devs, trans_devs):
+#     dNu = [dNu1,                                              # 100
+#           dNu2,                                               # 76
+#           -0.76*dNu1 - 1.6*dNu2  + 0.37*Bu - 0.2735714286*Bl, # 56
+#           -1.28*dNu1 + 1.8*dNu2  + 0.84*Bu - 0.6439285714*Bl, # 40
+#           -1.6*dNu1  + 1*dNu2    + 1.3*Bu  - 1.128571429*Bl,  # 18
+#           0.68*dNu1  - 3.8*dNu2  - 1.61*Bu + 1.176071429*Bl,  # 16
+#           1.76*dNu1  - 5.6*dNu2  - 2.42*Bu + 2.066428571*Bl,  # 15
+#           -0.16*dNu1 - 2.4*dNu2  - 0.7*Bu  + 0.3335714286*Bl, # 14
+#           3.08*dNu1  - 7.8*dNu2  - 2.86*Bu + 2.86*Bl,         # 10
+#           -0.76*dNu1 - 1.4*dNu2  + 0.1*Bu  - 0.3485714286*Bl, # 9
+#           -1.56*dNu1 + 1.6*dNu2  + 1.2*Bu  - 0.9664285714*Bl, # 8
+#           4.84*dNu1  - 14.4*dNu2 - 5.28*Bu + 4.926428571*Bl,  # 1
+#           3.2*dNu1   - 11*dNu2   - 4.4*Bu  + 3.516071429*Bl,  # 1
+#           1.8*dNu1   - 8*dNu2    - 3.15*Bu + 2.153571429*Bl,  # 1
+#           0.64*dNu1  - 5.4*dNu2  - 1.8*Bu  + 0.9514285714*Bl] # 1
+#     dNu = np.asarray(dNu)
     
-    for i in range(dNu.shape[0]):
-        plt.errorbar([dNu[i],dNu[i]], [amps[i],amps[i]], yerr=amp_devs[i], color='k', capsize=5, marker='.')
-        plt.errorbar([dNu[i],dNu[i]], [0,0], xerr=trans_devs[i], color='k', capsize=5)
-        plt.plot([dNu[i],dNu[i]], [0,amps[i]], color='k')
+#     for i in range(dNu.shape[0]):
+#         plt.errorbar([dNu[i],dNu[i]], [amps[i],amps[i]], yerr=amp_devs[i], color='k', capsize=5, marker='.')
+#         plt.errorbar([dNu[i],dNu[i]], [0,0], xerr=trans_devs[i], color='k', capsize=5)
+#         plt.plot([dNu[i],dNu[i]], [0,amps[i]], color='k')
     
-    return None
+#     return None
 
 def get_peaks(freq, sig):
     '''
@@ -247,6 +249,7 @@ ex_dNu = [ex_fits.iloc[:,2],                                                    
        1.8*ex_fits.iloc[:,2]   - 8*ex_fits.iloc[:,3]    - 3.15*ex_fits.iloc[:,4] + 2.153571429*ex_fits.iloc[:,5],  # 1
        0.64*ex_fits.iloc[:,2]  - 5.4*ex_fits.iloc[:,3]  - 1.8*ex_fits.iloc[:,4]  + 0.9514285714*ex_fits.iloc[:,5]] # 1
 ex_dNu = np.asarray(ex_dNu)
+
 # Get standard deviation of each transition from the N_excellent calculations above
 trans_devs = np.zeros(15)
 for i in range(15):
@@ -272,9 +275,34 @@ plt.plot(freq, sig, '.', color='c', label='Measured lineshape')
 plt.plot(freq, best_vals,  color='r', label='Fitted lineshape')
 plt.legend()
 plt.ylabel('Signal (arb.)')
-plt.xlabel('\u0394 f (GHz)')
+plt.xlabel('\u0394f (GHz)')
 # plt.xlim(-4, 4)
+
+# Equations for each hyperfine transition
+dNu = [dNu1,                                              # 100
+    dNu2,                                                 # 76
+    -0.76*dNu1 - 1.6*dNu2  + 0.37*B_U - 0.2735714286*B_L, # 56
+    -1.28*dNu1 + 1.8*dNu2  + 0.84*B_U - 0.6439285714*B_L, # 40
+    -1.6*dNu1  + 1*dNu2    + 1.3*B_U  - 1.128571429*B_L,  # 18
+    0.68*dNu1  - 3.8*dNu2  - 1.61*B_U + 1.176071429*B_L,  # 16
+    1.76*dNu1  - 5.6*dNu2  - 2.42*B_U + 2.066428571*B_L,  # 15
+    -0.16*dNu1 - 2.4*dNu2  - 0.7*B_U  + 0.3335714286*B_L, # 14
+    3.08*dNu1  - 7.8*dNu2  - 2.86*B_U + 2.86*B_L,         # 10
+    -0.76*dNu1 - 1.4*dNu2  + 0.1*B_U  - 0.3485714286*B_L, # 9
+    -1.56*dNu1 + 1.6*dNu2  + 1.2*B_U  - 0.9664285714*B_L, # 8
+    4.84*dNu1  - 14.4*dNu2 - 5.28*B_U + 4.926428571*B_L,  # 1
+    3.2*dNu1   - 11*dNu2   - 4.4*B_U  + 3.516071429*B_L,  # 1
+    1.8*dNu1   - 8*dNu2    - 3.15*B_U + 2.153571429*B_L,  # 1
+    0.64*dNu1  - 5.4*dNu2  - 1.8*B_U  + 0.9514285714*B_L] # 1
+dNu = np.asarray(dNu)
+
+amps = best_pars[6:]
+for i in range(dNu.shape[0]):
+        plt.errorbar([dNu[i],dNu[i]], [amps[i],amps[i]], yerr=amp_devs[i], color='k', capsize=5, marker='.')
+        plt.errorbar([dNu[i],dNu[i]], [0,0], xerr=trans_devs[i], color='k', capsize=5)
+        plt.plot([dNu[i],dNu[i]], [0,amps[i]], color='k')
+
 # Plot transition predictions on top of fitted lineshape, with error bars
-plot_transitions(freq, best_vals, dNu1, dNu2, B_U, B_L, best_pars[6:], amp_devs, trans_devs)
+# plot_transitions(freq, best_vals, dNu1, dNu2, B_U, B_L, best_pars[6:], amp_devs, trans_devs)
 
 plt.savefig('data/final_result_errbars.png', format='png')
