@@ -4,6 +4,7 @@ Created on Sat Mar  6 15:08:02 2021
 
 @author: mlazo
 """
+import time
 
 import pandas as pd
 import numpy as np
@@ -35,18 +36,32 @@ def import_excellent():
     except:
         raise NameError
     
-    excellent = data[data['RMSE']<0.007] #0.007
-    # excellent = data[(data['RMSE']<0.0078) & (data['RMSE']>0.0072)] #0.007
+    excellent = data[data['RMSE']<=0.01] # 0.007
+    # excellent = data[(data['RMSE']<0.0078) & (data['RMSE']>0.0072)] # investigation of RMSE distribution
 
     return excellent
 
 def export_data(data):
     try:
-        f = input('Enter export file name:\n')
+        f = input('Enter export file name for least-squares GUESSES:\n')
         filename = "data/{}.csv".format(f)
         
         df = pd.DataFrame(data)
         df.to_csv(filename, header=['sig_offset', 'dNu1 (GHz)', 'dNu2 (GHz)', 'B_U (GHz)', 'B_L (GHz)', 'T (eV)', 'b1', 'b2', 'b3', 'b4', 'b5', 'b6', 'b7', 'b8', 'b9', 'b10', 'b11', 'b12', 'b13', 'b14', 'b15', 'RMSE'])
+    except:
+        raise NameError
+    
+    return None
+
+def export_converged_values(vals, AU, AL):
+    try:
+        f = input('Enter export file name for CONVERGED VALUES:\n')
+        filename = 'data/{}.csv'.format(f)
+        
+        df = pd.DataFrame(vals)
+        df.insert(4, 'A_U (GHz)', AU)
+        df.insert(6, 'A_L (GHz)', AL)
+        df.to_csv(filename, header=['fit_index', 'sig_offset', 'dNu1 (GHz)', 'dNu2 (GHz)', 'A_U (GHz)', 'B_U (GHz)', 'A_L (GHz)', 'B_L (GHz)', 'T (eV)', 'b1', 'b2', 'b3', 'b4', 'b5', 'b6', 'b7', 'b8', 'b9', 'b10', 'b11', 'b12', 'b13', 'b14', 'b15', 'RMSE'])
     except:
         raise NameError
     
@@ -101,31 +116,6 @@ def i_ii_line(x, *pars):
     
     return G
 
-def plot_transitions(freq, vals, dNu1, dNu2, Bu, Bl, amps, amp_devs, trans_devs):
-    dNu = [dNu1,                                              # 100
-          dNu2,                                               # 76
-          -0.76*dNu1 - 1.6*dNu2  + 0.37*Bu - 0.2735714286*Bl, # 56
-          -1.28*dNu1 + 1.8*dNu2  + 0.84*Bu - 0.6439285714*Bl, # 40
-          -1.6*dNu1  + 1*dNu2    + 1.3*Bu  - 1.128571429*Bl,  # 18
-          0.68*dNu1  - 3.8*dNu2  - 1.61*Bu + 1.176071429*Bl,  # 16
-          1.76*dNu1  - 5.6*dNu2  - 2.42*Bu + 2.066428571*Bl,  # 15
-          -0.16*dNu1 - 2.4*dNu2  - 0.7*Bu  + 0.3335714286*Bl, # 14
-          3.08*dNu1  - 7.8*dNu2  - 2.86*Bu + 2.86*Bl,         # 10
-          -0.76*dNu1 - 1.4*dNu2  + 0.1*Bu  - 0.3485714286*Bl, # 9
-          -1.56*dNu1 + 1.6*dNu2  + 1.2*Bu  - 0.9664285714*Bl, # 8
-          4.84*dNu1  - 14.4*dNu2 - 5.28*Bu + 4.926428571*Bl,  # 1
-          3.2*dNu1   - 11*dNu2   - 4.4*Bu  + 3.516071429*Bl,  # 1
-          1.8*dNu1   - 8*dNu2    - 3.15*Bu + 2.153571429*Bl,  # 1
-          0.64*dNu1  - 5.4*dNu2  - 1.8*Bu  + 0.9514285714*Bl] # 1
-    dNu = np.asarray(dNu)
-    
-    for i in range(dNu.shape[0]):
-        plt.errorbar([dNu[i],dNu[i]], [amps[i],amps[i]], yerr=amp_devs[i], color='k', capsize=5, marker='.')
-        plt.errorbar([dNu[i],dNu[i]], [0,0], xerr=trans_devs[i], color='k', capsize=5)
-        plt.plot([dNu[i],dNu[i]], [0,amps[i]], color='k')
-    
-    return None
-
 def get_peaks(freq, sig):
     '''
     Determine peaks in the I II lineshape, display each peak with an 'X', and
@@ -152,6 +142,8 @@ def get_peaks(freq, sig):
     print("Peak signal values (arb.): ", sig[peaks])
     
     return None
+
+
 
 # # # #
 freq, sig = import_data()
@@ -200,7 +192,6 @@ dNu2 = 0.72610497      # Second-highest-intensity transition frequency, in GHz
 # Export to CSV
 # export_data(results)
 
-
 # # # # Select excellent fits and calculate coupling coefficients
 ex_fits = import_excellent()
 print("\nExcellent fits:\n", ex_fits)
@@ -221,6 +212,10 @@ B_U = best_pars[3]
 B_L = best_pars[4]
 T = best_pars[5]
 
+# A coeffs for each set of excellent params
+ex_A_U = (14/25)*np.asarray(ex_fits.iloc[:,1]) - (8/5)*np.asarray(ex_fits.iloc[:,2]) - (31/50)*np.asarray(ex_fits.iloc[:,3]) + (13/25)*np.asarray(ex_fits.iloc[:,4])
+ex_A_L = (8/25)*np.asarray(ex_fits.iloc[:,1]) - (6/5)*np.asarray(ex_fits.iloc[:,2]) - (11/25)*np.asarray(ex_fits.iloc[:,3]) + (73/200)*np.asarray(ex_fits.iloc[:,4])
+# A coeffs from best_pars
 A_U = (14/25)*dNu1 - (8/5)*dNu2 - (31/50)*B_U + (13/25)*B_L
 A_L = (8/25)*dNu1 - (6/5)*dNu2 - (11/25)*B_U + (73/200)*B_L
 
@@ -247,6 +242,7 @@ ex_dNu = [ex_fits.iloc[:,2],                                                    
        1.8*ex_fits.iloc[:,2]   - 8*ex_fits.iloc[:,3]    - 3.15*ex_fits.iloc[:,4] + 2.153571429*ex_fits.iloc[:,5],  # 1
        0.64*ex_fits.iloc[:,2]  - 5.4*ex_fits.iloc[:,3]  - 1.8*ex_fits.iloc[:,4]  + 0.9514285714*ex_fits.iloc[:,5]] # 1
 ex_dNu = np.asarray(ex_dNu)
+
 # Get standard deviation of each transition from the N_excellent calculations above
 trans_devs = np.zeros(15)
 for i in range(15):
@@ -272,9 +268,35 @@ plt.plot(freq, sig, '.', color='c', label='Measured lineshape')
 plt.plot(freq, best_vals,  color='r', label='Fitted lineshape')
 plt.legend()
 plt.ylabel('Signal (arb.)')
-plt.xlabel('\u0394 f (GHz)')
+plt.xlabel('\u0394f (GHz)')
 # plt.xlim(-4, 4)
-# Plot transition predictions on top of fitted lineshape, with error bars
-plot_transitions(freq, best_vals, dNu1, dNu2, B_U, B_L, best_pars[6:], amp_devs, trans_devs)
+
+# Equations for each hyperfine transition
+dNu = [dNu1,                                              # 100
+    dNu2,                                                 # 76
+    -0.76*dNu1 - 1.6*dNu2  + 0.37*B_U - 0.2735714286*B_L, # 56
+    -1.28*dNu1 + 1.8*dNu2  + 0.84*B_U - 0.6439285714*B_L, # 40
+    -1.6*dNu1  + 1*dNu2    + 1.3*B_U  - 1.128571429*B_L,  # 18
+    0.68*dNu1  - 3.8*dNu2  - 1.61*B_U + 1.176071429*B_L,  # 16
+    1.76*dNu1  - 5.6*dNu2  - 2.42*B_U + 2.066428571*B_L,  # 15
+    -0.16*dNu1 - 2.4*dNu2  - 0.7*B_U  + 0.3335714286*B_L, # 14
+    3.08*dNu1  - 7.8*dNu2  - 2.86*B_U + 2.86*B_L,         # 10
+    -0.76*dNu1 - 1.4*dNu2  + 0.1*B_U  - 0.3485714286*B_L, # 9
+    -1.56*dNu1 + 1.6*dNu2  + 1.2*B_U  - 0.9664285714*B_L, # 8
+    4.84*dNu1  - 14.4*dNu2 - 5.28*B_U + 4.926428571*B_L,  # 1
+    3.2*dNu1   - 11*dNu2   - 4.4*B_U  + 3.516071429*B_L,  # 1
+    1.8*dNu1   - 8*dNu2    - 3.15*B_U + 2.153571429*B_L,  # 1
+    0.64*dNu1  - 5.4*dNu2  - 1.8*B_U  + 0.9514285714*B_L] # 1
+dNu = np.asarray(dNu)
+
+amps = best_pars[6:]
+for i in range(dNu.shape[0]):
+        plt.errorbar([dNu[i],dNu[i]], [amps[i],amps[i]], yerr=amp_devs[i], color='k', capsize=5, marker='.')
+        plt.errorbar([dNu[i],dNu[i]], [0,0], xerr=trans_devs[i], color='k', capsize=5)
+        plt.plot([dNu[i],dNu[i]], [0,amps[i]], color='k')
+
+# Export converged values for coupling coefficients, signal offset, temperature, amplitudes, and RMSE, including each standard deviation value
+ex_converged_vals = np.asarray(ex_fits.iloc[:,:])
+export_converged_values(ex_converged_vals, ex_A_U, ex_A_L)
 
 plt.savefig('data/final_result_errbars.png', format='png')
