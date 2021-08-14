@@ -28,19 +28,6 @@ def import_data():
     
     return freq, sig
 
-def import_excellent():
-    try:
-        f = input('Enter file name:\n')
-        filename = "data/{}.csv".format(f)
-        data = pd.read_csv(filename)
-    except:
-        raise NameError
-    
-    excellent = data[data['RMSE']<=0.01] # 0.007
-    # excellent = data[(data['RMSE']<0.0078) & (data['RMSE']>0.0072)] # investigation of RMSE distribution
-
-    return excellent
-
 def export_data(data):
     try:
         f = input('Enter export file name for least-squares GUESSES:\n')
@@ -52,6 +39,19 @@ def export_data(data):
         raise NameError
     
     return None
+
+def import_excellent():
+    try:
+        f = input('Enter file name:\n')
+        filename = "data/{}.csv".format(f)
+        data = pd.read_csv(filename)
+    except:
+        raise NameError
+    
+    excellent = data[data['RMSE']<=0.007] # 0.007, 0.01
+    # excellent = data[(data['RMSE']<0.0078) & (data['RMSE']>0.0072)] # investigation of RMSE distribution
+
+    return excellent
 
 def export_converged_values(vals, AU, AL):
     try:
@@ -84,8 +84,8 @@ def i_ii_line(x, *pars):
     Returns
     -------
     G
-        Function containing 15 overlapping Maxwellian curves to characterize
-        the I II lineshape, in terms of the provided fit parameters.
+        Function containing 15 overlapping Gaussian curves to characterize the
+        I II lineshape, in terms of the provided fit parameters.
     '''
     a = pars[0]     # DC offset
     dNu1 = pars[1]  # Highest-intensity transition
@@ -145,7 +145,7 @@ def get_peaks(freq, sig):
 
 
 
-# # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 freq, sig = import_data()
 sig_max = np.amax(sig)
 freq_min = np.amin(freq)
@@ -156,6 +156,8 @@ sig = sig / sig_max # Normalize signal
 # get_peaks(freq, sig) # Used to determine dNu1 and dNu2 below
 dNu1 = 1.62649497      # Highest-intensity transition frequency, in GHz
 dNu2 = 0.72610497      # Second-highest-intensity transition frequency, in GHz
+
+
 
 # Fitting routine
 # fits = 10_000
@@ -192,12 +194,14 @@ dNu2 = 0.72610497      # Second-highest-intensity transition frequency, in GHz
 # Export to CSV
 # export_data(results)
 
+
+
 # # # # Select excellent fits and calculate coupling coefficients
 ex_fits = import_excellent()
 print("\nExcellent fits:\n", ex_fits)
 num_ex = ex_fits.iloc[:,0].size
 
-# Compile fit parameters for all excellent fits
+# Calculate the values from i_ii_line() for each of the excellent fits
 ex_fit_vals = np.zeros((freq.shape[0], num_ex))
 for i in range(num_ex):
     ex_fit_vals[:,i] = i_ii_line(freq, *ex_fits.iloc[i,1:22])
@@ -212,14 +216,15 @@ B_U = best_pars[3]
 B_L = best_pars[4]
 T = best_pars[5]
 
+# NOTE: below two techniques for finding A_U and A_L produce the same results if one manually averages over the ex_A_U and ex_A_L output to .csv
 # A coeffs for each set of excellent params
-ex_A_U = (14/25)*np.asarray(ex_fits.iloc[:,1]) - (8/5)*np.asarray(ex_fits.iloc[:,2]) - (31/50)*np.asarray(ex_fits.iloc[:,3]) + (13/25)*np.asarray(ex_fits.iloc[:,4])
-ex_A_L = (8/25)*np.asarray(ex_fits.iloc[:,1]) - (6/5)*np.asarray(ex_fits.iloc[:,2]) - (11/25)*np.asarray(ex_fits.iloc[:,3]) + (73/200)*np.asarray(ex_fits.iloc[:,4])
+ex_A_U = (14/25)*np.asarray(ex_fits.iloc[:,2]) - (8/5)*np.asarray(ex_fits.iloc[:,3]) - (31/50)*np.asarray(ex_fits.iloc[:,4]) + (13/25)*np.asarray(ex_fits.iloc[:,5])
+ex_A_L = (8/25)*np.asarray(ex_fits.iloc[:,2]) - (6/5)*np.asarray(ex_fits.iloc[:,3]) - (11/25)*np.asarray(ex_fits.iloc[:,4]) + (73/200)*np.asarray(ex_fits.iloc[:,5])
 # A coeffs from best_pars
 A_U = (14/25)*dNu1 - (8/5)*dNu2 - (31/50)*B_U + (13/25)*B_L
 A_L = (8/25)*dNu1 - (6/5)*dNu2 - (11/25)*B_U + (73/200)*B_L
 
-# Calculate errors
+# Standard deviations of each of the 21 parameters and RMSE for all excellent fits
 devs = np.std(ex_fits, axis=0)
 
 A_U_err = np.sqrt(( (14/25)*devs[2] )**2 + ( (8/5)*devs[3] )**2 + ( (31/50)*devs[4] )**2 + ( (13/25)*devs[5] )**2)
@@ -260,6 +265,7 @@ print('A_L:', A_L, '+-', A_L_err)
 # plt.hist(ex_fits.iloc[:,22])
 
 # Plot of measured lineshape and average of best fit values
+# Commented lines were used to produce manuscript Fig. 3; may be needed again later
 fig = plt.figure(figsize=(8,6), dpi=128)
 # font = {'family' : 'normal',
 #         'size'   : 16}
@@ -271,31 +277,32 @@ plt.ylabel('Signal (arb.)')
 plt.xlabel('\u0394f (GHz)')
 # plt.xlim(-4, 4)
 
-# Equations for each hyperfine transition
-dNu = [dNu1,                                              # 100
-    dNu2,                                                 # 76
-    -0.76*dNu1 - 1.6*dNu2  + 0.37*B_U - 0.2735714286*B_L, # 56
-    -1.28*dNu1 + 1.8*dNu2  + 0.84*B_U - 0.6439285714*B_L, # 40
-    -1.6*dNu1  + 1*dNu2    + 1.3*B_U  - 1.128571429*B_L,  # 18
-    0.68*dNu1  - 3.8*dNu2  - 1.61*B_U + 1.176071429*B_L,  # 16
-    1.76*dNu1  - 5.6*dNu2  - 2.42*B_U + 2.066428571*B_L,  # 15
-    -0.16*dNu1 - 2.4*dNu2  - 0.7*B_U  + 0.3335714286*B_L, # 14
-    3.08*dNu1  - 7.8*dNu2  - 2.86*B_U + 2.86*B_L,         # 10
-    -0.76*dNu1 - 1.4*dNu2  + 0.1*B_U  - 0.3485714286*B_L, # 9
-    -1.56*dNu1 + 1.6*dNu2  + 1.2*B_U  - 0.9664285714*B_L, # 8
-    4.84*dNu1  - 14.4*dNu2 - 5.28*B_U + 4.926428571*B_L,  # 1
-    3.2*dNu1   - 11*dNu2   - 4.4*B_U  + 3.516071429*B_L,  # 1
-    1.8*dNu1   - 8*dNu2    - 3.15*B_U + 2.153571429*B_L,  # 1
-    0.64*dNu1  - 5.4*dNu2  - 1.8*B_U  + 0.9514285714*B_L] # 1
+# Final equations for each hyperfine transition from each "best" parameter
+dNu = [dNu1,                                                 # 100
+       dNu2,                                                 # 76
+       -0.76*dNu1 - 1.6*dNu2  + 0.37*B_U - 0.2735714286*B_L, # 56
+       -1.28*dNu1 + 1.8*dNu2  + 0.84*B_U - 0.6439285714*B_L, # 40
+       -1.6*dNu1  + 1*dNu2    + 1.3*B_U  - 1.128571429*B_L,  # 18
+       0.68*dNu1  - 3.8*dNu2  - 1.61*B_U + 1.176071429*B_L,  # 16
+       1.76*dNu1  - 5.6*dNu2  - 2.42*B_U + 2.066428571*B_L,  # 15
+       -0.16*dNu1 - 2.4*dNu2  - 0.7*B_U  + 0.3335714286*B_L, # 14
+       3.08*dNu1  - 7.8*dNu2  - 2.86*B_U + 2.86*B_L,         # 10
+       -0.76*dNu1 - 1.4*dNu2  + 0.1*B_U  - 0.3485714286*B_L, # 9
+       -1.56*dNu1 + 1.6*dNu2  + 1.2*B_U  - 0.9664285714*B_L, # 8
+       4.84*dNu1  - 14.4*dNu2 - 5.28*B_U + 4.926428571*B_L,  # 1
+       3.2*dNu1   - 11*dNu2   - 4.4*B_U  + 3.516071429*B_L,  # 1
+       1.8*dNu1   - 8*dNu2    - 3.15*B_U + 2.153571429*B_L,  # 1
+       0.64*dNu1  - 5.4*dNu2  - 1.8*B_U  + 0.9514285714*B_L] # 1
 dNu = np.asarray(dNu)
 
+# Plot transition locations with error bars
 amps = best_pars[6:]
 for i in range(dNu.shape[0]):
         plt.errorbar([dNu[i],dNu[i]], [amps[i],amps[i]], yerr=amp_devs[i], color='k', capsize=5, marker='.')
         plt.errorbar([dNu[i],dNu[i]], [0,0], xerr=trans_devs[i], color='k', capsize=5)
         plt.plot([dNu[i],dNu[i]], [0,amps[i]], color='k')
 
-# Export converged values for coupling coefficients, signal offset, temperature, amplitudes, and RMSE, including each standard deviation value
+# Export converged values for coupling coefficients, signal offset, temperature, amplitudes, and RMSE
 ex_converged_vals = np.asarray(ex_fits.iloc[:,:])
 export_converged_values(ex_converged_vals, ex_A_U, ex_A_L)
 
