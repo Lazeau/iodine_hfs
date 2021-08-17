@@ -68,6 +68,9 @@ def export_converged_values(vals, AU, AL):
     return None
 
 def maxwellian(b, x, x0, T):
+    '''
+    Convenience function for plotting a Maxwellian curve for our iodine plasma
+    '''
     return b * np.exp( -(0.3186334108*((x-x0)**2)/T) )
 
 def i_ii_line(x, *pars):
@@ -188,7 +191,7 @@ dNu2 = 0.72610497      # Second-highest-intensity transition frequency, in GHz
     # plt.plot(freq, sig, ".", markersize=1.5)
     # plt.plot(freq, i_ii_line(freq, *popt))
     # plt.ylabel('Signal (arb.)')
-    # plt.xlabel('Frequency Offset (GHz)')
+    # plt.xlabel('\u0394f (GHz)')
     # plt.show()
 
 # Export to CSV
@@ -304,6 +307,6 @@ for i in range(dNu.shape[0]):
 
 # Export converged values for coupling coefficients, signal offset, temperature, amplitudes, and RMSE
 ex_converged_vals = np.asarray(ex_fits.iloc[:,:])
-export_converged_values(ex_converged_vals, ex_A_U, ex_A_L)
+# export_converged_values(ex_converged_vals, ex_A_U, ex_A_L)
 
-plt.savefig('data/final_result_errbars.png', format='png')
+# plt.savefig('data/final_result_errbars.png', format='png')
