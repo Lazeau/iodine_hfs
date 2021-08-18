@@ -44,8 +44,8 @@ def find_fwhm(freq, sig):
 signal = pd.DataFrame(None)
 frequency = pd.DataFrame(None)
 shots = [112, 113, 124, 119, 120, 122]
-laser_powers = np.asarray([2.2, 2.2, 1.7, 1.0, 0.7, 0.5]) # mW
-laser_intensities = laser_powers / (np.pi * 0.001**2) # 1 mm radius laser beam
+laser_powers = np.asarray([0.0022, 0.0022, 0.0017, 0.001, 0.0007, 0.0005]) # W
+laser_intensities = (2 * laser_powers) / (np.pi * 0.0001**2) # 1 mm radius laser beam
 
 for i in range(len(shots)):
     freq, sig, shot = import_data(shots[i])
