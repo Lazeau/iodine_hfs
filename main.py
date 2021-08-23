@@ -160,8 +160,6 @@ sig = sig / sig_max # Normalize signal
 dNu1 = 1.62649497      # Highest-intensity transition frequency, in GHz
 dNu2 = 0.72610497      # Second-highest-intensity transition frequency, in GHz
 
-
-
 # Fitting routine
 # fits = 10_000
 # results = np.zeros((fits, 22))
@@ -187,17 +185,16 @@ dNu2 = 0.72610497      # Second-highest-intensity transition frequency, in GHz
 #     print('\npopt:', popt, '\n')
 #     results[i,:] = np.asarray([*popt, rmse])
     
-    # fig = plt.figure(figsize=(8,6), dpi=128)
-    # plt.plot(freq, sig, ".", markersize=1.5)
-    # plt.plot(freq, i_ii_line(freq, *popt))
-    # plt.ylabel('Signal (arb.)')
-    # plt.xlabel('\u0394f (GHz)')
-    # plt.show()
+# Plot the current fit (for testing)
+# fig = plt.figure(figsize=(8,6), dpi=128)
+# plt.plot(freq, sig, ".", markersize=1.5)
+# plt.plot(freq, i_ii_line(freq, *popt))
+# plt.ylabel('Signal (arb.)')
+# plt.xlabel('\u0394f (GHz)')
+# plt.show()
 
 # Export to CSV
 # export_data(results)
-
-
 
 # # # # Select excellent fits and calculate coupling coefficients
 ex_fits = import_excellent()
@@ -259,10 +256,7 @@ for i in range(15):
 # Standard deviations of each amplitude, extracted from best fits to lineshape
 amp_devs = devs[7:22]
 
-print("\n\nPredicted coupling coefficients:\n A_U: {},\n B_U: {},\n A_L: {},\n B_L: {},\n T: {},\n dNu1: {},\n dNu2: {}\n".format(A_U, B_U, A_L, B_L, T, dNu1, dNu2))
-print('Standard Deviations:\n', devs)
-print('\nA_U:', A_U, '+-', A_U_err)
-print('A_L:', A_L, '+-', A_L_err)
+print("\n\nEstimated values:\n Signal Offset: {} +- {}\n A_U: {} +- {}\n B_U: {} +- {}\n A_L: {} +- {}\n B_L: {} +- {}\n T: {} +- {}\n dNu1: {} +- {}\n dNu2: {} +- {}\n b1: {} +- {}\n b2: {} +- {}\n b3: {} +- {}\n b4: {} +- {}\n b5: {} +- {}\n b6: {} +- {}\n b7: {} +- {}\n b8: {} +- {}\n b9: {} +- {}\n b10: {} +- {}\n b11: {} +- {}\n b12: {} +- {}\n b13: {} +- {}\n b14: {} +- {}\n b15: {} +- {}\n".format(best_pars[0], devs[1], A_U, A_U_err, B_U, devs[4], A_L, A_L_err, B_L, devs[5], T, devs[6], dNu1, devs[2], dNu2, devs[3], best_pars[6], devs[7], best_pars[7], devs[8], best_pars[8], devs[9], best_pars[9], devs[10], best_pars[10], devs[11], best_pars[11], devs[12], best_pars[12], devs[13], best_pars[13], devs[14], best_pars[14], devs[15], best_pars[15], devs[16], best_pars[16], devs[17], best_pars[17], devs[18], best_pars[18], devs[19], best_pars[19], devs[20], best_pars[20], devs[21]))
 
 # Histogram of RMSE values
 # plt.hist(ex_fits.iloc[:,22])
