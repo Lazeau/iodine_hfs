@@ -103,32 +103,17 @@ def i_ii_line(x, *pars):
           dNu2,                                               # 75.974
           -0.76*dNu1 + 1.6*dNu2  + 0.37*Bu - 0.2735714286*Bl, # 56.122
           -1.28*dNu1 + 1.8*dNu2  + 0.84*Bu - 0.6439285714*Bl, # 40.087
-          -1.6*dNu1  + 1*dNu2    + 1.3*Bu  - 1.128571429*Bl,  # 18
-          0.68*dNu1  - 3.8*dNu2  - 1.61*Bu + 1.176071429*Bl,  # 16
-          1.76*dNu1  - 5.6*dNu2  - 2.42*Bu + 2.066428571*Bl,  # 15
-          -0.16*dNu1 - 2.4*dNu2  - 0.7*Bu  + 0.3335714286*Bl, # 14
-          3.08*dNu1  - 7.8*dNu2  - 2.86*Bu + 2.86*Bl,         # 10
-          -0.76*dNu1 - 1.4*dNu2  + 0.1*Bu  - 0.3485714286*Bl, # 9
-          -1.56*dNu1 + 1.6*dNu2  + 1.2*Bu  - 0.9664285714*Bl, # 8
-          4.84*dNu1  - 14.4*dNu2 - 5.28*Bu + 4.926428571*Bl,  # 1
-          3.2*dNu1   - 11*dNu2   - 4.4*Bu  + 3.516071429*Bl,  # 1
-          1.8*dNu1   - 8*dNu2    - 3.15*Bu + 2.153571429*Bl,  # 1
-          0.64*dNu1  - 5.4*dNu2  - 1.8*Bu  + 0.9514285714*Bl] # 1
-    x0 = [dNu1,                                                                                       # 100.000 1
-          ex_fits.iloc[:,3],                                                                                          # 75.974  2
-          -0.76*ex_fits.iloc[:,2] + 1.6*ex_fits.iloc[:,3]  + 0.37*ex_fits.iloc[:,4] - 0.2735714286*ex_fits.iloc[:,5], # 56.122  3
-          -1.28*ex_fits.iloc[:,2] + 1.8*ex_fits.iloc[:,3]  + 0.84*ex_fits.iloc[:,4] - 0.6439285714*ex_fits.iloc[:,5], # 40.087  4
-          -1.56*ex_fits.iloc[:,2] + 1.6*ex_fits.iloc[:,3]  + 1.2*ex_fits.iloc[:,4]  - 0.9664285714*ex_fits.iloc[:,5], # 27.551  5
-          -1.6*ex_fits.iloc[:,2]  + 1*ex_fits.iloc[:,3]    + 1.3*ex_fits.iloc[:,4]  - 1.128571429*ex_fits.iloc[:,5],  # 18.367  6
-          0.68*ex_fits.iloc[:,2]  - 3.8*ex_fits.iloc[:,3]  - 1.61*ex_fits.iloc[:,4] + 1.176071429*ex_fits.iloc[:,5],  # 16.035  7
-          1.76*ex_fits.iloc[:,2]  - 5.6*ex_fits.iloc[:,3]  - 2.42*ex_fits.iloc[:,4] + 2.066428571*ex_fits.iloc[:,5],  # 14.813  8
-          -0.16*ex_fits.iloc[:,2] - 2.4*ex_fits.iloc[:,3]  - 0.7*ex_fits.iloc[:,4]  + 0.3335714286*ex_fits.iloc[:,5], # 13.994  9
-          3.08*ex_fits.iloc[:,2]  - 7.8*ex_fits.iloc[:,3]  - 2.86*ex_fits.iloc[:,4] + 2.86*ex_fits.iloc[:,5],         # 9.711   10
-          -0.76*ex_fits.iloc[:,2] - 1.4*ex_fits.iloc[:,3]  + 0.1*ex_fits.iloc[:,4]  - 0.3485714286*ex_fits.iloc[:,5], # 9.184   11
-          1.8*ex_fits.iloc[:,2]   - 8*ex_fits.iloc[:,3]    - 3.15*ex_fits.iloc[:,4] + 2.153571429*ex_fits.iloc[:,5],  # 0.820   12
-          0.64*ex_fits.iloc[:,2]  - 5.4*ex_fits.iloc[:,3]  - 1.8*ex_fits.iloc[:,4]  + 0.9514285714*ex_fits.iloc[:,5], # 0.714   13
-          3.2*ex_fits.iloc[:,2]   - 11*ex_fits.iloc[:,3]   - 4.4*ex_fits.iloc[:,4]  + 3.516071429*ex_fits.iloc[:,5],  # 0.510   14
-          4.84*ex_fits.iloc[:,2]  - 14.4*ex_fits.iloc[:,3] - 5.28*ex_fits.iloc[:,4] + 4.926428571*ex_fits.iloc[:,5]]  # 0.012   15
+          -1.56*dNu1 + 1.6*dNu2  + 1.2*Bu  - 0.9664285714*Bl, # 27.551
+          -1.6*dNu1  + 1*dNu2    + 1.3*Bu  - 1.128571429*Bl,  # 18.367
+          0.68*dNu1  - 3.8*dNu2  - 1.61*Bu + 1.176071429*Bl,  # 16.035
+          1.76*dNu1  - 5.6*dNu2  - 2.42*Bu + 2.066428571*Bl,  # 14.813
+          -0.16*dNu1 - 2.4*dNu2  - 0.7*Bu  + 0.3335714286*Bl, # 13.994
+          3.08*dNu1  - 7.8*dNu2  - 2.86*Bu + 2.86*Bl,         # 9.711
+          -0.76*dNu1 - 1.4*dNu2  + 0.1*Bu  - 0.3485714286*Bl, # 9.184
+          1.8*dNu1   - 8*dNu2    - 3.15*Bu + 2.153571429*Bl,  # 0.820
+          0.64*dNu1  - 5.4*dNu2  - 1.8*Bu  + 0.9514285714*Bl, # 0.714
+          3.2*dNu1   - 11*dNu2   - 4.4*Bu  + 3.516071429*Bl,  # 0.510
+          4.84*dNu1  - 14.4*dNu2 - 5.28*Bu + 4.926428571*Bl]  # 0.012
     
     G = a + maxwellian(pars[6], x, x0[0], T) + maxwellian(pars[7], x, x0[1], T) + maxwellian(pars[8], x, x0[2], T) + maxwellian(pars[9], x, x0[3], T) + maxwellian(pars[10], x, x0[4], T) + maxwellian(pars[11], x, x0[5], T) + maxwellian(pars[12], x, x0[6], T) + maxwellian(pars[13], x, x0[7], T) + maxwellian(pars[14], x, x0[8], T) + maxwellian(pars[15], x, x0[9], T) + maxwellian(pars[16], x, x0[10], T) + maxwellian(pars[17], x, x0[11], T) + maxwellian(pars[18], x, x0[12], T) + maxwellian(pars[19], x, x0[13], T) + maxwellian(pars[20], x, x0[14], T)
     
@@ -197,16 +182,17 @@ dNu2 = 0.72610497      # Second-highest-intensity transition frequency, in GHz
 #     RESIDUAL = sig - i_ii_line(freq, *popt)
 #     rmse = (np.sum(RESIDUAL**2)/(RESIDUAL.size - 2))**(0.5)
 #     print('RMSE:', rmse)
-#     print('\npopt:', popt, '\n')
+#     # print('\npopt:', popt, '\n')
 #     results[i,:] = np.asarray([*popt, rmse])
     
-# Plot the current fit (for testing)
-# fig = plt.figure(figsize=(8,6), dpi=128)
-# plt.plot(freq, sig, ".", markersize=1.5)
-# plt.plot(freq, i_ii_line(freq, *popt))
-# plt.ylabel('Signal (arb.)')
-# plt.xlabel('\u0394f (GHz)')
-# plt.show()
+    # Plot the current fit (for testing)
+    # fig = plt.figure(figsize=(8,6), dpi=128)
+    # plt.plot(freq, sig, ".", markersize=1.5)
+    # plt.plot(freq, i_ii_line(freq, *popt))
+    # plt.ylabel('Signal (arb.)')
+    # plt.xlabel('\u0394f (GHz)')
+    # plt.show()
+
 
 # Export to CSV
 # export_data(results)
@@ -290,44 +276,56 @@ plt.xlabel('\u0394f (GHz)')
 # plt.xlim(-4, 4)
 
 # Final equations for each hyperfine transition from each "best" parameter
-dNu = [dNu1,                                                 # 100
-       dNu2,                                                 # 76
-       -0.76*dNu1 - 1.6*dNu2  + 0.37*B_U - 0.2735714286*B_L, # 56
-       -1.28*dNu1 + 1.8*dNu2  + 0.84*B_U - 0.6439285714*B_L, # 40
-       -1.6*dNu1  + 1*dNu2    + 1.3*B_U  - 1.128571429*B_L,  # 18
-       0.68*dNu1  - 3.8*dNu2  - 1.61*B_U + 1.176071429*B_L,  # 16
-       1.76*dNu1  - 5.6*dNu2  - 2.42*B_U + 2.066428571*B_L,  # 15
-       -0.16*dNu1 - 2.4*dNu2  - 0.7*B_U  + 0.3335714286*B_L, # 14
-       3.08*dNu1  - 7.8*dNu2  - 2.86*B_U + 2.86*B_L,         # 10
-       -0.76*dNu1 - 1.4*dNu2  + 0.1*B_U  - 0.3485714286*B_L, # 9
-       -1.56*dNu1 + 1.6*dNu2  + 1.2*B_U  - 0.9664285714*B_L, # 8
-       4.84*dNu1  - 14.4*dNu2 - 5.28*B_U + 4.926428571*B_L,  # 1
-       3.2*dNu1   - 11*dNu2   - 4.4*B_U  + 3.516071429*B_L,  # 1
-       1.8*dNu1   - 8*dNu2    - 3.15*B_U + 2.153571429*B_L,  # 1
-       0.64*dNu1  - 5.4*dNu2  - 1.8*B_U  + 0.9514285714*B_L] # 1
+dNu = [dNu1,                                               # 100.000
+       dNu2,                                               # 75.974
+       -0.76*dNu1 + 1.6*dNu2  + 0.37*B_U - 0.2735714286*B_L, # 56.122
+       -1.28*dNu1 + 1.8*dNu2  + 0.84*B_U - 0.6439285714*B_L, # 40.087
+       -1.56*dNu1 + 1.6*dNu2  + 1.2*B_U  - 0.9664285714*B_L, # 27.551
+       -1.6*dNu1  + 1*dNu2    + 1.3*B_U  - 1.128571429*B_L,  # 18.367
+       0.68*dNu1  - 3.8*dNu2  - 1.61*B_U + 1.176071429*B_L,  # 16.035
+       1.76*dNu1  - 5.6*dNu2  - 2.42*B_U + 2.066428571*B_L,  # 14.813
+       -0.16*dNu1 - 2.4*dNu2  - 0.7*B_U  + 0.3335714286*B_L, # 13.994
+       3.08*dNu1  - 7.8*dNu2  - 2.86*B_U + 2.86*B_L,         # 9.711
+       -0.76*dNu1 - 1.4*dNu2  + 0.1*B_U  - 0.3485714286*B_L, # 9.184
+       1.8*dNu1   - 8*dNu2    - 3.15*B_U + 2.153571429*B_L,  # 0.820
+       0.64*dNu1  - 5.4*dNu2  - 1.8*B_U  + 0.9514285714*B_L, # 0.714
+       3.2*dNu1   - 11*dNu2   - 4.4*B_U  + 3.516071429*B_L,  # 0.510
+       4.84*dNu1  - 14.4*dNu2 - 5.28*B_U + 4.926428571*B_L]  # 0.012
 dNu = np.asarray(dNu)
 
 # Plot transition locations with error bars
 amps = best_pars[6:]
 for i in range(dNu.shape[0]):
-        plt.errorbar([dNu[i],dNu[i]], [amps[i],amps[i]], yerr=amp_devs[i], color='k', capsize=5, marker='.')
-        plt.errorbar([dNu[i],dNu[i]], [0,0], xerr=trans_devs[i], color='k', capsize=5)
-        plt.plot([dNu[i],dNu[i]], [0,amps[i]], color='k')
+    # # # # For generating one transition location at a time for labeling
+    # fig = plt.figure(figsize=(8,6), dpi=128)
+    # plt.plot(freq, sig, '.', color='c', label='Measured lineshape')
+    # plt.plot(freq, best_vals,  color='r', label='Fitted lineshape')
+    # plt.ylabel('Signal (arb.)')
+    # plt.xlabel('\u0394f (GHz)')
+    # # # #
+    
+    plt.errorbar([dNu[i],dNu[i]], [amps[i],amps[i]], yerr=amp_devs[i], color='k', capsize=5, marker='.')
+    plt.errorbar([dNu[i],dNu[i]], [0,0], xerr=trans_devs[i], color='k', capsize=5)
+    plt.plot([dNu[i],dNu[i]], [0,amps[i]], color='k')
+    # # # #
+    # plt.show()
+    # input('continue...')
+    # # # #
 plt.show()
 
 # Export converged values for coupling coefficients, signal offset, temperature, amplitudes, and RMSE
 ex_converged_vals = np.asarray(ex_fits.iloc[:,:])
 # export_converged_values(ex_converged_vals, ex_A_U, ex_A_L)
 
-# plt.savefig('data/final_result_errbars.png', format='png')
+plt.savefig('data/final_result_errbars.png', format='png')
 
 
 
-test_pars = ex_converged_vals[0,1:22]
-print(test_pars)
-test_vals = i_ii_line(freq, *test_pars)
-plt.plot(freq, sig, label='signal')
-plt.plot(freq, test_vals, label='test line')
-plt.legend()
-plt.show()
-print('done')
+# Pull back in a set of converged values for testing
+# test_pars = ex_converged_vals[0,1:22]
+# print(test_pars)
+# test_vals = i_ii_line(freq, *test_pars)
+# plt.plot(freq, sig, label='signal')
+# plt.plot(freq, test_vals, label='test line')
+# plt.legend()
+# plt.show()
