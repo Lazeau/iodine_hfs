@@ -28,13 +28,21 @@ def import_data():
     
     return freq, sig
 
-def export_data(data):
+def export_data(data, cov):
     try:
+        # For pseudorandom guesses, 21 parameters + RMSE
         f = input('Enter export file name for least-squares GUESSES:\n')
         filename = "data/{}.csv".format(f)
         
         df = pd.DataFrame(data)
         df.to_csv(filename, header=['sig_offset', 'dNu1 (GHz)', 'dNu2 (GHz)', 'B_U (GHz)', 'B_L (GHz)', 'T (eV)', 'b1', 'b2', 'b3', 'b4', 'b5', 'b6', 'b7', 'b8', 'b9', 'b10', 'b11', 'b12', 'b13', 'b14', 'b15', 'RMSE'])
+        
+        # For diagonalized covariance matrix, 21 parameters; no header
+        f = input('Enter export file name for least-squares CONVARIANCE MATRIX:\n')
+        filename = "data/{}.csv".format(f)
+        
+        df = pd.DataFrame(cov)
+        df.to_csv(filename, header=['sig_offset', 'dNu1 (GHz)', 'dNu2 (GHz)', 'B_U (GHz)', 'B_L (GHz)', 'T (eV)', 'b1', 'b2', 'b3', 'b4', 'b5', 'b6', 'b7', 'b8', 'b9', 'b10', 'b11', 'b12', 'b13', 'b14', 'b15'])
     except:
         raise NameError
     
@@ -42,18 +50,24 @@ def export_data(data):
 
 def import_excellent():
     try:
-        f = input('Enter file name:\n')
+        f = input('Enter PARAMETER file name:\n')
         filename = "data/{}.csv".format(f)
         data = pd.read_csv(filename)
+        
+        f = input('Enter COVARIANCE file name:\n')
+        filename = "data/{}.csv".format(f)
+        cov = pd.read_csv(filename)
     except:
         raise NameError
     
-    excellent = data[data['RMSE']<=0.007] # 0.007, 0.01
+    RMSE_CUTOFF = 0.007
+    excellent_data = data[data['RMSE']<=RMSE_CUTOFF] # 0.007, 0.01
+    confidence = cov[data['RMSE']<=RMSE_CUTOFF] # Extract same indices based on data RMSE
     # excellent = data[(data['RMSE']<0.0078) & (data['RMSE']>0.0072)] # investigation of RMSE distribution
+    
+    return excellent_data, confidence
 
-    return excellent
-
-def export_converged_values(vals, AU, AL):
+def export_converged_values(vals, AU, AL, cov):
     try:
         f = input('Enter export file name for CONVERGED VALUES:\n')
         filename = 'data/{}.csv'.format(f)
@@ -62,6 +76,13 @@ def export_converged_values(vals, AU, AL):
         df.insert(4, 'A_U (GHz)', AU)
         df.insert(6, 'A_L (GHz)', AL)
         df.to_csv(filename, header=['fit_index', 'sig_offset', 'dNu1 (GHz)', 'dNu2 (GHz)', 'A_U (GHz)', 'B_U (GHz)', 'A_L (GHz)', 'B_L (GHz)', 'T (eV)', 'b1', 'b2', 'b3', 'b4', 'b5', 'b6', 'b7', 'b8', 'b9', 'b10', 'b11', 'b12', 'b13', 'b14', 'b15', 'RMSE'])
+        
+        
+        f = input('Enter export file name for COVARIANCE ARRAY:\n')
+        filename = 'data/{}.csv'.format(f)
+        
+        df = pd.DataFrame(cov)
+        df.to_csv(filename)
     except:
         raise NameError
     
@@ -163,6 +184,7 @@ dNu2 = 0.72610497      # Second-highest-intensity transition frequency, in GHz
 # Fitting routine
 # fits = 10_000
 # results = np.zeros((fits, 22))
+# confidence = np.zeros((fits, 21))
 # for i in range(fits):
 #     fit_pars = np.zeros(21)
     
@@ -177,12 +199,15 @@ dNu2 = 0.72610497      # Second-highest-intensity transition frequency, in GHz
 #     # Fit
 #     LIMITS = ((0, dNu1-0.5, dNu2-0.5, -100, -100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), (1, dNu1+0.5, dNu2+0.5, 100, 100, 0.09, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1))
 #     popt, pcov = so.curve_fit(i_ii_line, freq, sig, fit_pars, maxfev=10_000_000, bounds=LIMITS)
+#     confidence[i,:] = np.sqrt(np.diagonal(pcov)).reshape((1,21))
+#     print(confidence.shape)
     
 #     # RMSE
 #     RESIDUAL = sig - i_ii_line(freq, *popt)
 #     rmse = (np.sum(RESIDUAL**2)/(RESIDUAL.size - 2))**(0.5)
 #     print('RMSE:', rmse)
-#     # print('\npopt:', popt, '\n')
+#     print('\npopt:', popt)
+#     print('confidence:', confidence[i], '\n')
 #     results[i,:] = np.asarray([*popt, rmse])
     
     # Plot the current fit (for testing)
@@ -195,10 +220,10 @@ dNu2 = 0.72610497      # Second-highest-intensity transition frequency, in GHz
 
 
 # Export to CSV
-# export_data(results)
+# export_data(results, confidence)
 
 # # # # Select excellent fits and calculate coupling coefficients
-ex_fits = import_excellent()
+ex_fits, ex_cov = import_excellent()
 print("\nExcellent fits:\n", ex_fits)
 num_ex = ex_fits.iloc[:,0].size
 
@@ -307,6 +332,7 @@ for i in range(dNu.shape[0]):
     plt.errorbar([dNu[i],dNu[i]], [amps[i],amps[i]], yerr=amp_devs[i], color='k', capsize=5, marker='.')
     plt.errorbar([dNu[i],dNu[i]], [0,0], xerr=trans_devs[i], color='k', capsize=5)
     plt.plot([dNu[i],dNu[i]], [0,amps[i]], color='k')
+    
     # # # #
     # plt.show()
     # input('continue...')
@@ -315,7 +341,7 @@ plt.show()
 
 # Export converged values for coupling coefficients, signal offset, temperature, amplitudes, and RMSE
 ex_converged_vals = np.asarray(ex_fits.iloc[:,:])
-# export_converged_values(ex_converged_vals, ex_A_U, ex_A_L)
+# export_converged_values(ex_converged_vals, ex_A_U, ex_A_L, ex_cov)
 
 plt.savefig('data/final_result_errbars.png', format='png')
 
