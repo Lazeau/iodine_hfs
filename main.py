@@ -140,6 +140,36 @@ def i_ii_line(x, *pars):
     
     return G
 
+def saturated_lineshape(freq, b, norm_sat_int, *pars):
+    a = pars[0]     # DC offset
+    Au = pars[1]
+    Al = pars[2]
+    Bu = pars[3]    # P state electric quadrupole coupling coefficient
+    Bl = pars[4]    # D state electric quadrupole coupling coefficient
+    T = pars[5]     # Temperature
+                    # pars[6:20] are amplitudes for the 15 transition Gaussians
+    
+    # Transitions listed from strongest to weakest
+    x0 = [7.5*Au  + 0.25*Bu  - 10*Al   - 0.25*Bl,
+          2*Au    - 0.3*Bu   - 3.5*Al  + 0.2375*Bl,
+          -2.5*Au - 0.3*Bu   + 2*Al    + 0.2964285714*Bl,
+          -6*Au   - 0.02*Bu  + 6.5*Al  + 0.1035714286*Bl,
+          -8.5*Au + 0.330*Bu + 10*Al   - 0.1964285714*Bl,
+          -10*Au  + 0.6*Bu   + 12.5*Al - 0.4910714286*Bl,
+          -2.5*Au - 0.3*Bu   + 6.5*Al  + 0.1035714286*Bl,
+          2*Au    - 0.3*Bu   + 2*Al    + 0.2964285714*Bl,
+          -6*Au   - 0.02*Bu  + 10*Al   - 0.1964285714*Bl,
+          7.5*Au  + 0.25*Bu  - 3.5*Al  + 0.2375*Bl,
+          -8.5*Au + 0.330*Bu + 12.5*Al - 0.4910714286*Bl,
+          -2.5*Au - 0.3*Bu   + 10*Al   - 0.1964285714*Bl,
+          -6*Au   - 0.02*Bu  + 12.5*Al - 0.4910714286*Bl,
+          2*Au    - 0.3*Bu   + 6.5*Al  + 0.1035714286*Bl,
+          7.5*Au  + 0.25*Bu  + 2*Al    + 0.2964285714*Bl]
+    
+    sat_line = a + b * ( (norm_sat_int[0] * maxwellian(pars[6], x, x0[0], T)) + (norm_sat_int[1] * maxwellian(pars[7], x, x0[1], T)) + (norm_sat_int[2] * maxwellian(pars[8], x, x0[2], T)) + (norm_sat_int[3] * maxwellian(pars[9], x, x0[3], T)) + (norm_sat_int[4] * maxwellian(pars[10], x, x0[4], T)) + (norm_sat_int[5] * maxwellian(pars[11], x, x0[5], T)) + (norm_sat_int[6] * maxwellian(pars[12], x, x0[6], T)) + (norm_sat_int[7] * maxwellian(pars[13], x, x0[7], T)) + (norm_sat_int[8] * maxwellian(pars[14], x, x0[8], T)) + (norm_sat_int[9] * maxwellian(pars[15], x, x0[9], T)) + (norm_sat_int[10] * maxwellian(pars[16], x, x0[10], T)) + (norm_sat_int[11] * maxwellian(pars[17], x, x0[11], T)) + (norm_sat_int[12] * maxwellian(pars[18], x, x0[12], T)) + (norm_sat_int[13] * maxwellian(pars[19], x, x0[13], T)) + (norm_sat_int[14] * maxwellian(pars[20], x, x0[14], T)) )
+    
+    return sat_line
+
 def get_peaks(freq, sig):
     '''
     Determine peaks in the I II lineshape, display each peak with an 'X', and
@@ -355,3 +385,25 @@ plt.savefig('data/final_result_errbars.png', format='png')
 # plt.plot(freq, test_vals, label='test line')
 # plt.legend()
 # plt.show()
+
+
+# # # # Fitting with saturation
+THEOR_REL_INTENSITY = [1, 0.75974, 0.56122, 0.40087, 0.27551, 0.18367, 0.16055, 0.14813, 0.13994, 0.09711, 0.09184, 0.00820, 0.00714, 0.00510, 0.00012]
+SAT = 0.5
+SAT_REL_INTENSITY = THEOR_REL_INTENSITY / (1 + (THEOR_REL_INTENSITY / SAT) )
+SAT_INTENSITY_NORM = SAT_REL_INTENSITY / np.max(SAT_REL_INTENSITY)
+# DO THIS BUT JUST ONCE AND JUST 1 AMP PAR
+#     fit_pars = np.zeros(21)
+    
+#     fit_pars[0] = np.random.random() * 0.1                      # Signal offset guess
+#     fit_pars[1] = np.random.uniform(dNu1-0.5, dNu1+0.5)             # Highest-intensity transition guess in +-1 GHz window around predicted value, dNu1
+#     fit_pars[2] = np.random.uniform(dNu2-0.5, dNu2+0.5)             # Second-highest-intensity transition guess in +-1 GHz window around predicted value, dNu2
+#     fit_pars[3:5] = np.random.uniform(-2.5, 2.5, 2)               # Coeff guesses
+#     fit_pars[5] = np.random.random() * 0.05                     # Temp guess
+#     fit_pars[6:22] = np.random.uniform(0, 1, 15)                # Amplitude guesses
+#     print("Fit ", i)
+    
+#     # Fit
+#     LIMITS = ((0, dNu1-0.5, dNu2-0.5, -100, -100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), (1, dNu1+0.5, dNu2+0.5, 100, 100, 0.09, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1))
+#     popt, pcov = so.curve_fit(i_ii_line, freq, sig, fit_pars, maxfev=10_000_000, bounds=LIMITS)
+# # # #
